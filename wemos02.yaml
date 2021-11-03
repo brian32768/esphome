@@ -1,6 +1,6 @@
 substitutions:
   devicename: wemos02
-  upper_devicename: Wemos
+  upper_devicename: Wemos02
   static_ip: 192.168.123.204
 <<: !include common.yaml
 
@@ -18,8 +18,6 @@ i2c:
   sda: D2
 
 font:
-#  - file: "unifont.ttf"
-#    id: unifont
   - file: "DejaVuSansMono.ttf"
     id: dejavu
     size: 28
@@ -27,8 +25,8 @@ font:
     
 light:
   - platform: monochromatic
-    id: light_1
-    name: Builtin LED
+    id: builtin_light
+    name: ${upper_devicename} light
     output: output_bltinled
     restore_mode: ALWAYS_OFF
     default_transition_length: 10ms
@@ -48,7 +46,7 @@ output:
 sensor:
   - platform: adc
     pin: A0
-    name: $devicename lux
+    name: ${upper_devicename} lux
     update_interval: 30s
     unit_of_measurement: lx
     filters:
@@ -57,8 +55,8 @@ sensor:
 
 binary_sensor:
   - platform: gpio
-    id: doppler_motion
-    name: $devicename doppler motion
+    id: motion
+    name: ${upper_devicename} Motion
     device_class: motion
     pin:
       number: D5
@@ -66,15 +64,15 @@ binary_sensor:
       mode: INPUT
     on_press:
       then:
-        - light.turn_on: light_1
+        - light.turn_on: builtin_light
     on_release:
       then:
         - delay: 10s
-        - light.turn_off: light_1
+        - light.turn_off: builtin_light
 
   - platform: gpio
     id: button_1
-    name: ${devicename} button 1
+    name: ${upper_devicename} Button
     pin:
       number: D6
       mode: INPUT_PULLUP
@@ -83,11 +81,11 @@ binary_sensor:
       - delayed_on: 10ms
     on_press:
       then:
-        - light.turn_on: light_1
+        - light.turn_on: builtin_light
     on_release:
       then:
         - delay: 3s
-        - light.turn_off: light_1
+        - light.turn_off: builtin_light
       
 display:
   - platform: ssd1306_i2c
@@ -95,7 +93,7 @@ display:
     address: 0x3C
     brightness: .50
     lambda: |-
-      if (id(doppler_motion).state) {
+      if (id(motion).state) {
         it.strftime(10, 2, id(dejavu), "%I:%M%p", id(homeassistant_time).now());
       } else {
         it.fill(COLOR_OFF);
