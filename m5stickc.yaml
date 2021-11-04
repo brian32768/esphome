@@ -12,27 +12,14 @@ esphome:
   platformio_options: 
     upload_speed: 115200
 
-captive_portal:
-
-logger:
-
-# Enable Home Assistant API
-api:
-
-ota:
-
-# Don't need a web server right now
-web_server:
-
-# presence detection
-
 binary_sensor:
 
   - platform: gpio
     pin:
       number: GPIO36
       inverted: false
-    name: ${devicename} motion
+    name: ${upper_devicename} motion
+# Dang but the LED is bright
     on_press:
       then:
         - light.turn_on: led1
@@ -44,7 +31,7 @@ binary_sensor:
     pin:
       number: GPIO37
       inverted: true
-    name: ${devicename} button A
+    name: ${upper_devicename} button A
     on_press:
       then:
         - light.turn_on: led1
@@ -56,7 +43,7 @@ binary_sensor:
     pin:
       number: GPIO39
       inverted: true
-    name: ${devicename} button B
+    name: ${upper_devicename} button B
     on_press:
       then:
         - light.turn_on: led1
@@ -71,35 +58,36 @@ sensor:
     i2c_id: bus_a
     update_interval: 30s
     battery_level:
-      name: ${devicename} battery level
+      name: ${upper_devicename} battery level
       id: "m5stick_batterylevel"
 
   - platform: wifi_signal
-    name: ${devicename} wifi signal
+    name: ${upper_devicename} wifi signal
     id: wifi_dbm
+
   - platform: uptime
     name: ${devicename} uptime
 
 # internal LED
 light:
   - platform: monochromatic
-    output:  builtin_led
-    name: ${devicename} led
+    output:  builtin_light
+    name: ${upper_devicename} light
     id: led1
-    default_transition_length: 100ms
+    default_transition_length: 250ms
 
 output:
   - platform: ledc
     pin: 10
     inverted: true
-    id: builtin_led
+    id: builtin_light
 
-# internal IR Transmitter
-remote_transmitter:
-  - pin:
-      number: GPIO9
-    carrier_duty_percent: 50%
-    id: internal
+# Internal IR Transmitter
+#remote_transmitter:
+#  - pin:
+#      number: GPIO9
+#    carrier_duty_percent: 50%
+#    id: internal
 
 spi:
   clk_pin: GPIO13
@@ -131,6 +119,7 @@ display:
     dc_pin: GPIO23
     reset_pin: GPIO18
     rotation: 90
+    brightness: .25
     lambda: |-
       it.print(80, 4, id(font3), ST77XX_GREEN, TextAlign::TOP_CENTER, "${static_ip}");
       

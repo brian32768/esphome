@@ -9,10 +9,6 @@ esphome:
   platform: ESP8266
   board: d1_mini
 
-captive_portal:
-
-logger:
-
 i2c:
   scl: D1
   sda: D2
