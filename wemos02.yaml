@@ -42,13 +42,13 @@ output:
 sensor:
   - platform: adc
     pin: A0
-    name: ${upper_devicename} lux
+    name: ${upper_devicename} Ambient Light
     update_interval: 30s
     unit_of_measurement: lx
     filters:
       - lambda: |-
           return (x / 10000.0) * 2000000.0;
-
+    
 binary_sensor:
   - platform: gpio
     id: motion
