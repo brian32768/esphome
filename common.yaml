@@ -32,8 +32,6 @@ mqtt:
 #    username: homeassistant
 #    password: u89adsjr3
 
-logger:
-
 captive_portal:
 
 sensor:

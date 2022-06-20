@@ -2,8 +2,9 @@ substitutions:
   devicename: m5stick01
   upper_devicename: M5Stick01
   static_ip: 192.168.123.209
-
 <<: !include common.yaml
+
+logger:
 
 esphome:
   name: ${devicename}

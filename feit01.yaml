@@ -1,5 +1,8 @@
+# Refer to 
+# https://github.com/carefulcomputer/espHomeOnFeitDimmer/blob/master/dimmer.yaml
+
 substitutions:
-  devicename: feit01
+  devicename: feit1
   upper_devicename: Feit1
   static_ip: 192.168.123.211
 <<: !include common.yaml
@@ -9,19 +12,30 @@ esphome:
   platform: ESP8266
   board: esp01_1m
 
+# Register the Tuya MCU connection
+tuya:
+
+# The UART is used by Tuya so logging 
+# will stop it from functioning.
+logger:
+  baud_rate: 0
+  level: NONE
+
 uart:
   rx_pin: GPIO3
   tx_pin: GPIO1
   baud_rate: 9600
 
-# Register the Tuya MCU connection
-tuya:
-
 # This dimmer has control for a light 
 # an on/off switch and two up/down buttons
+# but pretty much that's out of our control
+# because of the Tuya MCU.
 
 light:
   - platform: "tuya" 
-    name: "dimmable light"
+    name: "dimmer"
     switch_datapoint: 1
     dimmer_datapoint: 2
+    min_value: 10
+    max_value: 1000
+    retain: false
