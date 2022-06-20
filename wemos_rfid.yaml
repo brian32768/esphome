@@ -1,6 +1,6 @@
 substitutions:
-  devicename: wemos_rfid
-  upper_devicename: WEMOS_RFID
+  devicename: wemos-rfid
+  upper_devicename: WEMOS-RFID
   static_ip: 192.168.123.240
 <<: !include common.yaml
 
@@ -17,14 +17,15 @@ spi:
   mosi_pin: D7
 
 rc522_spi:
-  cs_pin: GPIO15
-  on_tag:
+  cs_pin: GPIO15 # this makes no sense to me
+  on_tag: # any tag makes the light go on
     then:
       - light.turn_on: light_1
       - delay: 1s
       - light.turn_off: light_1
   reset_pin: D3
 
+# Send an event when this exact tag shows up
 binary_sensor:
   - platform: rc522
     uid: 74-10-37-94
@@ -36,14 +37,14 @@ binary_sensor:
 light:
   - platform: monochromatic
     id: light_1
-    name: Builtin LED
-    output: output_bltinled
+    name: RFID Builtin LED
+    output: output_rfidled
     restore_mode: ALWAYS_OFF
     default_transition_length: 10ms
 
 output:
   - platform: esp8266_pwm
-    id: output_bltinled
+    id: output_rfidled
     pin: D4
     inverted: True
 
