@@ -67,12 +67,11 @@ binary_sensor:
 # IRQ   NC
     
 light:
-  - platform: monochromatic
+  - platform: binary
     id: light_1
     name: RFID Builtin LED
     output: output_rfidled
     restore_mode: ALWAYS_OFF
-    default_transition_length: 10ms
 
 output:
   - platform: esp8266_pwm
