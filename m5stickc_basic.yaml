@@ -1,0 +1,49 @@
+substitutions:
+  devicename: m5stick01
+  static_ip: 192.168.123.209
+
+packages:
+  common: !include common.yaml
+  m5stickc: !include m5stickc_hardware.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO36
+      inverted: false
+    name: Motion
+    on_press:
+      then:
+        - light.turn_on: led1
+    on_release:
+      then:
+        - light.turn_off: led1
+        
+  - platform: gpio
+    pin:
+      number: GPIO37
+      inverted: true
+    name: Button A
+    on_press:
+      then:
+        - light.turn_on: led1
+    on_release:
+      then:
+        - light.turn_off: led1
+        
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: Button B
+    on_press:
+      then:
+        - light.toggle: backlight
+
+# Internal IR Transmitter
+remote_transmitter:
+  - pin:
+      number: GPIO9
+    carrier_duty_percent: 50%
+    id: ir_xmit
+
