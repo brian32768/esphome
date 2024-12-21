@@ -1,0 +1,82 @@
+substitutions:
+  devicename: m5stick00
+  static_ip: 192.168.123.208
+
+packages:
+  common: !include common.yaml
+  m5stickc: !include m5stickc_hardware.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO37
+      inverted: true
+    name: Button A
+    on_press:
+      then:
+        - light.turn_on: led1
+    on_release:
+      then:
+        - light.turn_off: led1
+        
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: Button B
+    on_press:
+      then:
+        - light.toggle: backlight
+
+font:
+  - file: 'unifont.ttf'
+    id: font1
+    size: 12
+
+  - file: 'unifont.ttf'
+    id: font2
+    size: 36
+
+  - file: 'unifont.ttf'
+    id: font3
+    size: 14
+
+# builtin TFT LCD
+display:
+  - platform: ili9xxx
+    model: st7735
+    dc_pin: GPIO23
+    reset_pin: GPIO18
+    cs_pin: GPIO5
+    invert_colors: true # black background
+    rotation: 90
+    dimensions:
+      # M5 docs appear to be wrong, they say 80x160
+      width: 132
+      height: 162
+    lambda: |-
+      // center everything, so use X=height/2
+      //
+      //    normal screen is ip address, time of day, signal strength
+      //    (I probably want the water temp and air temp here instead)
+      //
+      //    startup screen is just "No Wifi"
+      
+      if (id(wifi_dbm).has_state()) {
+        char str[128];
+
+        // IP ADDRESS (static)
+        it.print(80, 24, id(font3), GREEN, TextAlign::TOP_CENTER, {static_ip});
+
+        // TIME 
+        it.strftime(80, 36, id(font2), YELLOW, TextAlign::TOP_CENTER, "%I:%M %p", id(homeassistant_time).now());
+
+        // SIGNAL
+        sprintf(str, "%.0f dBm", id(wifi_dbm).state);
+        it.print(80, 82, id(font3), BLUE, TextAlign::CENTER, str);
+
+      } else {
+        it.print(80, 40, id(font2), RED, TextAlign::CENTER, "No Wifi");
+      }
+
+# That's all!

@@ -1,41 +1,44 @@
+
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   fast_connect: on
-  manual_ip:
-    static_ip: ${static_ip}
-    gateway: 192.168.123.1
-    subnet: 255.255.255.0
+  id: wifi_id
+#  manual_ip:
+#    static_ip: ${static_ip}
+#    gateway: 192.168.123.1
+#    subnet: 255.255.255.0
 
-# Enable fallback hotspot (captive portal) in case wifi connection fails
-#  ap:
-#    ssid: ${devicename} hotspot
-#    password: !secret wifi_password
+  # Enable fallback hotspot (captive portal) in case wifi connection fails (like, we change the password!!)
+  ap:
+    ssid: ${devicename}_hotspot
+    password: leonardo
 
-# Enable over-the-air updates
-ota:
+logger:
 
-# Don't need a web server right now
-#web_server:
-
-# Enable Home Assistant API
-# I need this to get the time from Home Assistant
+# This makes it talk via the esphome integration
 api:
-
-# or
-# Enable mqtt
-mqtt:
-    broker: 192.168.123.2
-    discovery: true
-    discovery_prefix: homeassistant
-# 2021-10-10 not working in mosquitto
-#    username: homeassistant
-#    password: u89adsjr3
 
 captive_portal:
 
-sensor:
+# Enable over-the-air updates
+ota:
+  - platform: esphome
+  
+# Don't need a web server right now
+#web_server:
 
-- platform: wifi_signal
-  name: ${upper_devicename} WiFi Signal
-  update_interval: 60s
+sensor:
+  - platform: uptime
+    name: ${devicename} uptime
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+    id: wifi_dbm
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+# That's all!

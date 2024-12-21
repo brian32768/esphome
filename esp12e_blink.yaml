@@ -4,6 +4,8 @@ substitutions:
   static_ip: 192.168.123.200
 <<: !include common.yaml
 
+api:
+
 esphome:
   name: ${devicename}
   platform: ESP8266

@@ -1,0 +1,141 @@
+# AXP192 AXP192 power manangment IC
+# MPU6886 IMS IC
+
+esphome:
+  name: ${devicename}
+  platform: ESP32
+  board: m5stick-c
+  platformio_options: 
+    upload_speed: 115200
+
+binary_sensor:
+  - platform: axp192
+    axp192_id: axp
+    type: battery_present
+    name: "Power"
+  - platform: axp192
+    axp192_id: axp
+    type: charge_indicate
+    id: axp_charger
+    name: "Charger"
+
+output:
+  # Power supply
+  - platform: axp192
+    axp192_id: axp
+    output: ldo3
+    id: axp_ldo3
+
+  # LCD backlight
+  - platform: axp192
+    axp192_id: axp
+    output: ldo2
+    id: axp_ldo2
+
+  - platform: ledc
+    pin: 10
+    inverted: true
+    id: builtin_light
+
+switch:
+  # Toggling LDO3 switches the device OFF
+  - platform: axp192
+    axp192_id: axp
+    output: ldo3
+    name: LDO3
+
+  # Toggle backlight
+  - platform: axp192
+    axp192_id: axp
+    output: ldo2
+    name: LDO2
+
+light:
+  - platform: monochromatic
+    name: Light
+    output: builtin_light
+    id: led1
+    default_transition_length: 250ms
+
+  - platform: monochromatic
+    name: "Power supply"
+    output: axp_ldo3
+    restore_mode: ALWAYS_ON
+
+  - platform: monochromatic
+    name: "Backlight"
+    output: axp_ldo2
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+sensor:
+  - platform: axp192
+    axp192_id: axp
+    type: battery_voltage
+    name: "Voltage"
+
+  - platform: axp192
+    axp192_id: axp
+    type: battery_charge_current
+    name: "Current"
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15
+
+  - platform: mpu6886
+    address: 0x68
+    accel_x:
+      name: "MPU6886 Accel X"
+    accel_y:
+      name: "MPU6886 Accel Y"
+    accel_z:
+      name: "MPU6886 Accel z"
+#    gyro_x:
+#      name: "MPU6886 Gyro X"
+#    gyro_y:
+#      name: "MPU6886 Gyro Y"
+#    gyro_z:
+#      name: "MPU6886 Gyro z"
+    temperature:
+      name: "MPU6886 Temperature"
+      id: mpu_temp
+    update_interval: 30s
+
+spi:
+  clk_pin: GPIO13
+  mosi_pin: GPIO15
+
+i2c:
+   - id: bus_a
+     sda: GPIO21
+     scl: GPIO22
+     scan: True
+
+axp192:
+  id: axp
+  address: 0x34
+  update_interval: 30s
+  charge_voltage: 4150mV
+  dcdc1_voltage: 3300mv
+  dcdc3_voltage: 1.5V
+
+color:
+  - id: GREEN
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: BLUE
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: RED
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: YELLOW
+    red: 100%
+    green: 100%
+    blue: 0%
+
+# That's all!
