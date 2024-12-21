@@ -5,10 +5,9 @@ substitutions:
   static_ip: 192.168.123.208
 <<: !include common.yaml
 
-# AXP192 power manager must be
-# present to control LCD backlight.
-
 packages:
+  common: !include common.yaml
+  m5stickc: !include m5stickc_hardware.yaml
   econet: !include econet_electric_tank_water_heater.yaml
 
 econet:
@@ -46,20 +45,7 @@ binary_sensor:
     name: Button B
     on_press:
       then:
-        - light.turn_on: led1
-    on_release:
-      then:
-        - light.turn_off: led1
-
-  - platform: axp192
-    axp192_id: axp
-    type: battery_present
-    name: "Power"
-  - platform: axp192
-    axp192_id: axp
-    type: charge_indicate
-    id: axp_charger
-    name: "Charger"
+        - light.toggle: backlight
 
   - platform: econet
     name: "Compressor"
@@ -82,48 +68,7 @@ text_sensor:
     icon: "mdi:information-box"
     entity_category: "diagnostic"
     
-output:
-  - platform: ledc
-    pin: 10
-    inverted: true
-    id: builtin_light
-
-  # Power supply and backlight
-  - platform: axp192
-    axp192_id: axp
-    output: ldo3
-    id: axp_ldo3
-
-light:
-  - platform: monochromatic
-    name: Light
-    output: builtin_light
-    id: led1
-    default_transition_length: 250ms
-
-  - platform: monochromatic
-    name: "Backlight"
-    output: axp_ldo3
-    restore_mode: ALWAYS_ON
-
 sensor:
-  - platform: wifi_signal
-    name: "WiFi Signal"
-    update_interval: 60s
-    id: wifi_dbm
-
-  - platform: axp192
-    axp192_id: axp
-    type: battery_voltage
-    name: "Voltage"
-  - platform: axp192
-    axp192_id: axp
-    type: battery_charge_current
-    name: "Current"
-    filters:
-      - sliding_window_moving_average:
-          window_size: 15
-          send_every: 15
 
   - platform: econet
     name: "Ambient Temperature"
@@ -218,24 +163,6 @@ sensor:
     accuracy_decimals: 1
     unit_of_measurement: "%"
     entity_category: "diagnostic"
-    
-spi:
-  clk_pin: GPIO13
-  mosi_pin: GPIO15
-
-i2c:
-   - id: bus_a
-     sda: GPIO21
-     scl: GPIO22
-     scan: True
-
-axp192:
-  id: axp
-  address: 0x34
-  update_interval: 60s
-  charge_voltage: 4150mV
-  dcdc1_voltage: 3300mv
-  dcdc3_voltage: 1.5V
 
 font:
   - file: 'unifont.ttf'
@@ -250,25 +177,7 @@ font:
     id: font3
     size: 14
 
-color:
-  - id: GREEN
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: BLUE
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: RED
-    red: 100%
-    green: 0%
-    blue: 0%
-  - id: YELLOW
-    red: 100%
-    green: 100%
-    blue: 0%
-
-# builtin 80x160 TFT
+# builtin TFT LCD
 display:
   - platform: ili9xxx
     model: st7735
@@ -278,9 +187,7 @@ display:
     invert_colors: true # black background
     rotation: 90
     dimensions:
-    # yes I know... it's wrong, should be 80, but use whatever works for you
-      width: 120
-    # using 160 left a little noise on the screen, maybe it's really 
+      width: 132
       height: 162
     lambda: |-
       // center everything, so use X=height/2
@@ -309,6 +216,5 @@ display:
         it.print(80, 40, id(font2), RED, TextAlign::CENTER, "No Wifi");
       }
 
-time:
-  - platform: homeassistant
-    id: homeassistant_time
+# That's all!
+

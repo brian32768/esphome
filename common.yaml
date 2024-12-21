@@ -4,10 +4,10 @@ wifi:
   password: !secret wifi_password
   fast_connect: on
   id: wifi_id
-#  manual_ip:
-#    static_ip: ${static_ip}
-#    gateway: 192.168.123.1
-#    subnet: 255.255.255.0
+  manual_ip:
+    static_ip: ${static_ip}
+    gateway: 192.168.123.1
+    subnet: 255.255.255.0
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails (like, we change the password!!)
   ap:

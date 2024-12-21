@@ -65,8 +65,8 @@ display:
       if (id(wifi_dbm).has_state()) {
         char str[128];
 
-        // IP ADDRESS (static)
-        it.print(80, 24, id(font3), GREEN, TextAlign::TOP_CENTER, {static_ip});
+        // IP ADDRESS 
+        it.print(80, 24, id(font3), GREEN, TextAlign::TOP_CENTER, ${static_ip});
 
         // TIME 
         it.strftime(80, 36, id(font2), YELLOW, TextAlign::TOP_CENTER, "%I:%M %p", id(homeassistant_time).now());
