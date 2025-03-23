@@ -30,19 +30,50 @@ rc522_spi:
 # Send an event when this exact tag shows up
 binary_sensor:
   - platform: rc522
-    uid: 74-10-37-94
-    name: "RC522 RFID Tag"
+    uid: 04-0C-6A-B2-7B-2B-81
+    name: "RFID 1"
+
+  - platform: rc522
+    uid: 04-A3-A0-BA-7B-2B-80
+    name: "RFID 2"
+
+  - platform: rc522
+    uid: 04-85-A0-BA-7B-2B-80
+    name: "RFID 3"
+
+  - platform: rc522
+    uid: 04-86-A0-BA-7B-2B-80
+    name: "RFID 4"
+
+  - platform: rc522
+    uid: 23-8C-D5-E5
+    name: "Blue tag"
+
+  - platform: rc522
+    uid: 04-73-3F-32-85-2A-80
+    name: "AM 1"
+
+  - platform: rc522
+    uid: 04-87-25-32-85-2A-80
+    name: "AM 2"
+
+  - platform: rc522
+    uid: 04-8C-41-32-85-2A-80
+    name: "AM 3"
+
+  - platform: rc522
+    uid: 43-FB-31-13
+    name: "RFID Card"
 
 # SDA   D8
 # IRQ   NC
     
 light:
-  - platform: monochromatic
+  - platform: binary
     id: light_1
     name: RFID Builtin LED
     output: output_rfidled
     restore_mode: ALWAYS_OFF
-    default_transition_length: 10ms
 
 output:
   - platform: esp8266_pwm
