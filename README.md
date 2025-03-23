@@ -8,15 +8,22 @@ page](https://esphome.io/guides/getting_started_command_line.html)
 ``` 
 
 Create a YAML file
-   esphome wizard wrover2.yaml
+
+```bash
+esphome wizard wrover2.yaml
+```
 
 Process the YAML file, will attempt OTA upgrade on the Docker version, because it can't find the serial port.
 
-   esphome run wrover2.yaml
+```bash
+esphome run wrover2.yaml
+```
 
 Process the YAML and do upgrade over USB port on Linux.
 
-   docker run --rm -v "${PWD}":/config --device=/dev/tty.usbserial-1410 -it esphome/esphome wrover2.yaml run
+```bash
+docker run --rm -v "${PWD}":/config --device=/dev/tty.usbserial-1410 -it esphome/esphome wrover2.yaml run
+```
 
 ## ESP-C3-12F notes
 

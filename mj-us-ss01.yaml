@@ -7,34 +7,42 @@ packages:
   common: !include common.yaml
 
 esphome:
-  name: mj-s2
+  # name the esphome build will use
+  name: mj-ss01
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  on_boot:
+    # Both lights on dimly means it's still loading
+    - priority: 600
+      then:
+      # RED indicates we're starting up
+        - switch.turn_on: red_led
+        - switch.turn_off: blue_led
+    - priority: 200
+      then:
+      # BLUE means network is up
+        - switch.turn_off: red_led
+        - switch.turn_on: blue_led
+
+# We ignore state on boot
+preferences:
+  flash_write_interval: never
 
 bk72xx:
   board: wb2s
 
-mqtt:
-  broker: 192.168.123.2
-  username: ""
-  password: ""
-  discovery: True # discover entities
-  discover_ip: True # discover devices
-  #log_topic:
-  #  level: VERBOSE
-
 switch:
-  # relay output
   - platform: gpio
     id: relay
     name: Relay
     pin: PWM2
-
     on_turn_on:
       - switch.turn_on: blue_led
-      - switch.turn_off: red_led
-
+      - switch.turn_on: red_led
     on_turn_off:
       - switch.turn_on: blue_led
-      - switch.turn_on: red_led
+      - switch.turn_off: red_led
 
   - platform: gpio
     pin: PWM4
@@ -59,27 +67,15 @@ binary_sensor:
     on_press:
       - switch.toggle: relay
 
-text_sensor:
-  - platform: version
-    name: ESPHome version
-    id: esphome_version
-    hide_timestamp: True
-  - platform: libretiny
-    version:
-      name: LibreTiny version
-  - platform: wifi_info
-    ip_address:
-      id: ip_address
-      name: IP Address
-    mac_address:
-      name: Mac address
-      id: mac_address
+sensor:
+  # Not sure what is running here
+  - platform: adc
+    pin: ADC3
+    name: "Analog"
 
-# This allows restart via MQTT
+# This allows remote restart via MQTT
 button:
   - platform: restart
     id: restart_button
     name: Remote restart
     entity_category: diagnostic
-
-
