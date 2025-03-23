@@ -1,0 +1,78 @@
+substitutions:
+  devicename: martin_jerry_us-ss01
+  friendly_name: "Martin Jerry US-SS01" 
+  static_ip: "DHCP mode"
+
+packages:
+  common: !include common.yaml
+
+esphome:
+  name: mj-s2
+
+bk72xx:
+  board: wb2s
+
+mqtt:
+  broker: 192.168.123.2
+  username: ""
+  password: ""
+  discovery: True # discover entities
+  discover_ip: True # discover devices
+  #log_topic:
+  #  level: VERBOSE
+
+switch:
+  # relay output
+  - platform: gpio
+    id: relay
+    name: Relay
+    pin: PWM2
+
+    on_turn_on:
+      - switch.turn_on: blue_led
+      - switch.turn_off: red_led
+
+    on_turn_off:
+      - switch.turn_on: blue_led
+      - switch.turn_on: red_led
+
+  - platform: gpio
+    pin: PWM4
+    id: red_led
+    name: Red LED
+    inverted: true
+
+  - platform: gpio
+    pin: PWM5
+    id: blue_led
+    name: Blue LED
+    inverted: true
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      # shared with UART1_RXD
+      number: P10
+      mode: INPUT_PULLUP
+      inverted: true
+    name: Button
+    on_press:
+      - switch.toggle: relay
+
+  - platform: gpio
+    pin:
+      # labeled "AD"
+      number: P23
+      mode: INPUT_PULLUP
+      inverted: true
+    name: Restart Button
+    on_press:
+      - switch.toggle: relay
+
+# This allows restart via MQTT
+button:
+  - platform: restart
+    id: restart_button
+    name: Remote restart
+    entity_category: diagnostic
+

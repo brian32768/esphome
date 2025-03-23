@@ -1,0 +1,7 @@
+Device configuration, as extracted from Tuya: 
+- Button (channel 1) on P10
+- LED (channel 1) on P26
+- WiFi LED on P24
+- Relay (channel 1) on P8
+Device seems to be using WB2S module, which is using BK7231T.
+And the Tuya section starts, as usual, at 2023424
