@@ -21,7 +21,7 @@ output:
   - platform: gpio
     id: output_builtin_led
     pin: GPIO2
-    inverted: False
+    inverted: True
 
 # Enable the API (so we can talk to Home Assistant)
 api:

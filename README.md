@@ -1,38 +1,69 @@
 I followed the instructions on the [ESPHome Getting Started
 page](https://esphome.io/guides/getting_started_command_line.html)
 
-The docker version works fine on Bellman (Linux) and on Mac until the
-upload stage. Since the ESP32 is plugged into the Mac, I cannot do a
-serial upload from Bellman, and Docker + USB fails on the Mac. So I am
-using Conda instead.
-
 ```bash
- conda create --name=esphome python
+ conda create --name=esphome python pip
  conda activate esphome
  pip install esphome
 ``` 
 
 Create a YAML file
-
    esphome wizard wrover2.yaml
-or
-   docker run --rm -v "${PWD}":/config -it esphome/esphome wrover2.yaml wizard
 
 Process the YAML file, will attempt OTA upgrade on the Docker version, because it can't find the serial port.
 
    esphome run wrover2.yaml
-or
-   docker run --rm -v "${PWD}":/config -it esphome/esphome wrover2.yaml run
 
-Process the YAML and do upgrade over USB port on Linux; this step fails on the Mac because
-it will run a virtual machine that cannot see the serial ports.
+Process the YAML and do upgrade over USB port on Linux.
 
    docker run --rm -v "${PWD}":/config --device=/dev/tty.usbserial-1410 -it esphome/esphome wrover2.yaml run
 
+## ESP-C3-12F notes
+
+This is a device that looks like an ESP8266 based ESP-12F
+but has a C3 processor so it's different. But ESPhome supports it.
+I am going to solder one into a Martin Jerry switch to test the concept.
+
+```bash
+esphome wizard mj-c3.yaml
+```
+
+1. I named my node mj1. I am sure this is a duplicate but all the nodes are in a box on the shelf right now so I will risk it.
+
+2. I set CPU to ESP32 but there was no option for this board so I took a stab at "esp32-c3-mli-kit" which is "Ai-Thinker ESP-C3-M1-I-Kit". 
+This is a NodeMCU look-alike.
+I think ESPHome should support any board that PlatformIO supports.
+You can override settings. See https://docs.platformio.org/en/latest/boards/espressif32/esp32-c3-m1i-kit.html.
+I suspect as long as I leave it plugged into the programmer it will
+work just like the NodeMCU board.
+
+3. I set it to use wildsong2 wifi
+
+4. I did not set any OTA password.
+
+I should be able to build now, but this failed with a missing arduino file.
+I don't even want to use Arduino, and I found that I could edit the YAML
+and change framework: type: arduino to esp-idf then I was off to the races.
+
+```bash
+esphome config mj-c3.yaml
+esphome compile mj-c3.yaml
+```
+
+esptool.py --before default_reset --after hard_reset --baud 115200 --port /dev/ttyUSB0 --chip esp32c3 write_flash -z --flash_size detect 0x10000 .esphome/build/mj1/.pioenvs/mj1/firmware.bin 0x0 .esphome/build/mj1/.pioenvs/mj1/bootloader.bin 0x8000 .esphome/build/mj1/.pioenvs/mj1/partitions.bin 0x9000 .esphome/build/mj1/.pioenvs/mj1/ota_data_initial.bin
+
 ## M5StickC notes
 
-The M5StickC devices have an axp192 chip that's not supported by ESPHome, but
-it controls the display backlight, so without it, you can't use the display.
+### Water heater
+
+I am using an RS485 hat.
+https://wiki.wildsong.biz/index.php?title=M5StickC
+
+I set the RS485 pins in econet_base.yaml
+
+### Display
+
+For a year or so the display would not work because the AXP192 power management unit was not supported.
 
 I found a water level warning project on ESPHome that has the AXP192 support so I used it.
 
@@ -40,3 +71,4 @@ https://esphome.io/cookbook/leak-detector-m5stickc
 
 Code: https://github.com/airy10/esphome-m5stickC
 Better AXP192 code: https://gitlab.com/geiseri/esphome_extras
+

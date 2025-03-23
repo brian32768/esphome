@@ -1,6 +1,6 @@
 substitutions:
   devicename: m5stick01
-  static_ip: 192.168.123.209
+  static_ip: "dhcp mode"
 
 packages:
   common: !include common.yaml
@@ -79,8 +79,8 @@ display:
       if (id(wifi_dbm).has_state()) {
         char str[128];
 
-        // IP ADDRESS (static)
-        it.print(80, 24, id(font14), GREEN, TextAlign::TOP_CENTER, "${static_ip}");
+        // IP ADDRESS or maybe SSID I wish it were the DHCP address
+        //it.print(80, 24, id(font14), GREEN, TextAlign::TOP_CENTER, wifi.ssid);
 
         // TIME 
         it.strftime(80, 36, id(font36), YELLOW, TextAlign::TOP_CENTER, "%I:%M %p", id(homeassistant_time).now());

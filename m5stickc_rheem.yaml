@@ -1,9 +1,9 @@
 substitutions:
-  devicename: m5stick00_econet
+  name: "econet-hpwh"
+  devicename: "m5stick00-econet"
   friendly_name: "Water heater"
-  device_description: "Rheem Electric Tank Water Heater"
-  static_ip: 192.168.123.208
-<<: !include common.yaml
+  device_description: "Rheem Heat Pump Water Heater"
+  static_ip: "DHCP mode"
 
 packages:
   common: !include common.yaml
@@ -14,7 +14,6 @@ econet:
   dst_address: 0x1280
 
 climate:
-
   - id: !extend econet_climate
     custom_presets:
       0: "Off"
@@ -185,7 +184,7 @@ display:
     reset_pin: GPIO18
     cs_pin: GPIO5
     invert_colors: true # black background
-    rotation: 90
+    rotation: 270
     dimensions:
       width: 132
       height: 162
