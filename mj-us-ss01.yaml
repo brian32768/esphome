@@ -59,15 +59,21 @@ binary_sensor:
     on_press:
       - switch.toggle: relay
 
-  - platform: gpio
-    pin:
-      # labeled "AD"
-      number: P23
-      mode: INPUT_PULLUP
-      inverted: true
-    name: Restart Button
-    on_press:
-      - switch.toggle: relay
+text_sensor:
+  - platform: version
+    name: ESPHome version
+    id: esphome_version
+    hide_timestamp: True
+  - platform: libretiny
+    version:
+      name: LibreTiny version
+  - platform: wifi_info
+    ip_address:
+      id: ip_address
+      name: IP Address
+    mac_address:
+      name: Mac address
+      id: mac_address
 
 # This allows restart via MQTT
 button:
@@ -75,4 +81,5 @@ button:
     id: restart_button
     name: Remote restart
     entity_category: diagnostic
+
 
