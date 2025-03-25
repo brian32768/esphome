@@ -1,7 +1,6 @@
 substitutions:
-  devicename: martin_jerry_us-ss01
+  devicename: martin_jerry_us_ss01
   friendly_name: "Martin Jerry US-SS01" 
-  static_ip: "DHCP mode"
 
 packages:
   common: !include common.yaml
@@ -25,7 +24,7 @@ esphome:
         - switch.turn_off: red_led
         - switch.turn_on: blue_led
 
-# We ignore state on boot
+# We ignore state so we never cache it.
 preferences:
   flash_write_interval: never
 
@@ -45,15 +44,15 @@ switch:
       - switch.turn_off: red_led
 
   - platform: gpio
-    pin: PWM4
     id: red_led
     name: Red LED
+    pin: PWM4
     inverted: true
 
   - platform: gpio
-    pin: PWM5
     id: blue_led
     name: Blue LED
+    pin: PWM5
     inverted: true
 
 binary_sensor:
@@ -68,10 +67,24 @@ binary_sensor:
       - switch.toggle: relay
 
 sensor:
+  - platform: uptime
+    name: Uptime
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+    id: wifi_dbm
+
   # Not sure what is running here
   - platform: adc
     pin: ADC3
     name: "Analog"
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: ip_address
+      name: IP Address
 
 # This allows remote restart via MQTT
 button:

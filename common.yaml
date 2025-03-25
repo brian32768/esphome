@@ -12,53 +12,36 @@ wifi:
 
 captive_portal:
 
-# Probably not good on an ESP8266
-# but handy for debugging
+# Probably not good on an ESP8266 but handy for debugging
 # https://esphome.io/components/web_server.html
+# You can turn it on as needed for example to confirm
+# all your sensors are there when setting up a new device
 #web_server:
 #  port: 80
 
 # Enable logging
 logger:
 
-# Choose either api or mqtt
-# Esphome integration
-# api:
-#time:
-#  time only works with "api"
-#  - platform: homeassistant
-#    id: homeassistant_time
+# If you enable the ESPHome API then you have to turn off
+# discovery in mqtt, they fight each other.
+# With this method you have to click "add" in the ESPHome integration,
+# entities will no longer be added automatically.
+api:
+time:
+  # if you turn off api you have to remove this too
+  - platform: homeassistant
+    id: homeassistant_time
 mqtt:
   broker: !secret mqtt_broker
   username: !secret mqtt_username
   password: !secret mqtt_password
+  discovery: False # "api" does this
+  discover_ip: True # enable device discovery
+  discovery_retain: false
 
 # Enable over-the-air updates
 ota:
   - platform: esphome
     password: !secret ota_password
+    
 
-sensor:
-  - platform: uptime
-    name: Uptime
-
-  - platform: wifi_signal
-    name: "WiFi Signal"
-    update_interval: 60s
-    id: wifi_dbm
-
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      id: ip_address
-      name: IP Address
-    mac_address:
-      name: Mac address
-      id: mac_address
-      
-  - platform: version
-    name: ESPHome version
-    id: esphome_version
-    hide_timestamp: True
-
-# That's all!
