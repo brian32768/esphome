@@ -20,7 +20,10 @@ captive_portal:
 #  port: 80
 
 # Enable logging
+# for production, set to INFO
+# for development, set to DEBUG
 logger:
+  level: INFO
 
 # If you enable the ESPHome API then you have to turn off
 # discovery in mqtt, they fight each other.
