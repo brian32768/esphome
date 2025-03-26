@@ -1,18 +1,17 @@
 substitutions:
-  devicename: martin_jerry_us_ss01
-  friendly_name: "Martin Jerry US-SS01" 
+  devicename: martn_jerry_mj_s01
+  friendly_name: "Martin Jerry MJ-S01"
 
 packages:
   common: !include common.yaml
 
 esphome:
   # name the esphome build will use
-  name: mj-ss01
+  name: mj-s01
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
   on_boot:
-    # Both lights on dimly means it's still loading
     - priority: 600
       then:
       # RED only indicates we're starting up
@@ -28,43 +27,60 @@ esphome:
 preferences:
   flash_write_interval: never
 
-bk72xx:
-  board: wb2s
+esp8266:
+  board: esp01_1m
 
 switch:
   - platform: gpio
     id: relay
     name: Relay
-    pin: PWM2
+    pin: GPIO12
     on_turn_on:
       - switch.turn_on: blue_led
       - switch.turn_on: red_led
     on_turn_off:
       - switch.turn_on: blue_led
       - switch.turn_off: red_led
+      - light.turn_off: diagnostic_led
 
   - platform: gpio
     id: red_led
     name: Red LED
-    pin: PWM4
+    pin: GPIO4
     inverted: True
 
   - platform: gpio
     id: blue_led
     name: Blue LED
-    pin: PWM5
+    pin: GPIO5
+    inverted: True
+
+# This light is on the ESP12F,
+# not on the Tuya modules. Useful
+# for testing before installation.
+light:
+  - platform: binary
+    id: diagnostic_led
+    name: "MCU LED"
+    restore_mode: ALWAYS_ON
+    output: output_led
+output:
+  - platform: gpio
+    id: output_led
+    pin: GPIO2
     inverted: True
 
 binary_sensor:
   - platform: gpio
     name: Button
     pin:
-      # shared with UART1_RXD
-      number: P10
+      number: GPIO13
       mode: INPUT_PULLUP
       inverted: True
+    filters:
+      - delayed_on: 10ms
     on_press:
-      - switch.toggle: relay
+      switch.toggle: relay
 
 sensor:
   - platform: uptime
@@ -74,11 +90,6 @@ sensor:
     name: "WiFi Signal"
     update_interval: 60s
     id: wifi_dbm
-
-  # Not sure what is running here
-  - platform: adc
-    pin: ADC3
-    name: "Analog"
 
 text_sensor:
   - platform: wifi_info
