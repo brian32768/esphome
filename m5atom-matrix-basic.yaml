@@ -1,13 +1,13 @@
 substitutions:
-  devicename: m5atom-matrix
+  devicename: m5atom-matrix-900b98
   friendly_name: "M5Stack Atom Matrix"
 
 packages:
   common: !include common.yaml
 
 esphome:
-  name: m5atom-matrix
-  name_add_mac_suffix: True
+  name: ${devicename}
+#  name_add_mac_suffix: True
   platformio_options:
     upload_speed: 1500000 # use what works
     monitor_speed: 115200

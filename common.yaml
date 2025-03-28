@@ -1,8 +1,7 @@
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  #fast_connect: on # doesn't speed us up since we have only 1 net??
+  fast_connect: on # doesn't speed us up since we have only 1 net??
   domain: .iot
   
 # Enable fallback hotspot (captive portal) in case wifi connection fails (like, we change the password!!)
