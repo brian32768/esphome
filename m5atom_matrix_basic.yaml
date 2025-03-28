@@ -1,12 +1,12 @@
 substitutions:
-  devicename: m5atom_matrix
+  devicename: m5atom-matrix
   friendly_name: "M5Stack Atom Matrix"
 
 packages:
   common: !include common.yaml
 
 esphome:
-  name: m5atom_matrix
+  name: m5atom-matrix
   name_add_mac_suffix: True
   platformio_options:
     upload_speed: 1500000 # use what works
@@ -102,8 +102,8 @@ sensor:
     id: soil
     name: "Soil sensor"
     pin: GPIO32
-    update_interval: 5 minutes
-    attenuation: 11db
+    update_interval: 30 minutes
+    attenuation: 12db
 
 text_sensor:
   - platform: wifi_info
