@@ -30,6 +30,10 @@ logger:
 # With this method you have to click "add" in the ESPHome integration,
 # entities will no longer be added automatically.
 api:
+  # Switch mj-s01-1 was rebooting every 15 minutes, which is the default for
+  # this timer, setting it to 0 will turn off this feature.
+  reboot_timeout: 0s
+
 time:
   # if you turn off api you have to remove this too
   - platform: homeassistant
