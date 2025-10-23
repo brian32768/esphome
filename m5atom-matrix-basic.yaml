@@ -1,0 +1,119 @@
+substitutions:
+  devicename: m5atom-matrix-900b98
+  friendly_name: "M5Stack Atom Matrix"
+
+packages:
+  common: !include common.yaml
+
+esphome:
+  name: ${devicename}
+#  name_add_mac_suffix: True
+  platformio_options:
+    upload_speed: 1500000 # use what works
+    monitor_speed: 115200
+  on_boot:
+    # Turn off all the LEDs, which make too much heat!
+    - light.turn_off: neopixel 
+    # Always always turn off the pump
+    - switch.turn_off: pump 
+  
+esp32:
+  board: m5stack-atom
+  # uses Arduino platform
+        
+# Grove
+# yellow = G26 / DAC
+# white = G32 / ADC
+
+# Watering unit
+# white = analog sensor (0-3v3)
+# yellow = pump on off
+# red = 5V
+# blk = Ground
+
+# Back panel
+# 1 3Vc
+# 2 G22
+# 3 G19 / MOSI
+# 4 G23 / CLK
+# 5 G33 / ADC / MISO
+# 
+# 1 G21 / SCL
+# 2 G25 / DAC / SDC
+# 3 5V
+# 4 GND
+
+# There is an IMU in this device too.
+
+sprinkler:
+  id: watering_unit
+  name: "Sprinkler" 
+  valves:
+    - valve_switch: "Pump for 60s"
+      run_duration: 60s
+      valve_switch_id: pump
+
+switch:
+  - platform: gpio
+    id: pump
+    pin: GPIO26
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: True
+    name: Button A
+    on_click:
+      sprinkler.start_single_valve:
+        valve_number: 0
+        run_duration: 10s
+
+light:
+  # 5x5 Matrix of Neopixels
+  - platform: neopixelbus
+    id: neopixel
+    name: "NeoPixel 5x5 Matrix"
+    type: GRB
+    variant: WS2812
+    pin: GPIO27
+    num_leds: 25
+
+# Internal IR Transmitter
+remote_transmitter:
+  - pin:
+      number: GPIO12
+    carrier_duty_percent: 50%
+    id: ir_xmit
+
+sensor:
+  - platform: uptime
+    name: Uptime
+
+  - platform: wifi_signal
+    id: wifi_dbm
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  # Soil moisture
+  # See suggestions here
+  # https://www.emadashi.com/2021/01/m5-atom-lite-home-assistant-esphome-and-capacitive-soil-sensor/
+  - platform: adc
+    id: soil
+    name: "Soil sensor"
+    pin: GPIO32
+    update_interval: 30 minutes
+    attenuation: 12db
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: ip_address
+      name: IP Address
+
+# This allows remote restart via MQTT
+button:
+  - platform: restart
+    id: restart_button
+    name: Remote restart
+    entity_category: diagnostic
