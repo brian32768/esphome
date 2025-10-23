@@ -20,13 +20,14 @@ esphome:
   friendly_name: ${friendly_name}
   comment: ${device_description}
   min_version: "2024.11.0"
-  platform: ESP32
-  board: m5stick-c
   project:
     name: "esphome-econet.esphome-econet"
     version: v2.2.4
   platformio_options: 
     upload_speed: 115200
+esp32:
+  board: m5stick-c
+  
 api:
   services:
     - service: read
