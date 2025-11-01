@@ -14,21 +14,27 @@ esphome:
   on_boot:
     - priority: 600
       then:
-      # RED only indicates we're starting up
-        - switch.turn_on: red_led
+#      # RED only indicates we're starting up
+#        - switch.turn_on: red_led
         - switch.turn_off: blue_led
     - priority: 200
       then:
       # BLUE only means network is up
-        - switch.turn_off: red_led
+ #       - switch.turn_off: red_led
         - switch.turn_on: blue_led
+  #on_shutdown:
+  #  - priority: 700
+  #    then:
+  #      - switch.turn_off: switch_1
 
-# We ignore state so we never cache it.
+# Cache state so light can come back on after random stupid restarets
 preferences:
-  flash_write_interval: never
+  flash_write_interval: 5min
 
 esp8266:
   board: esp01_1m
+  # Restore from flash if you want to keep the last state at power up
+  restore_from_flash: true
 
 switch:
   - platform: gpio
@@ -37,23 +43,34 @@ switch:
     pin: GPIO12
     on_turn_on:
       - switch.turn_on: blue_led
-      - switch.turn_on: red_led
+#      - switch.turn_on: red_led
     on_turn_off:
       - switch.turn_on: blue_led
-      - switch.turn_off: red_led
+#      - switch.turn_off: red_led
       - light.turn_off: diagnostic_led
-
-  - platform: gpio
-    id: red_led
-    name: Red LED
-    pin: GPIO4
-    inverted: True
+    # Try to restore last state on power cycle but default to OFF
+    restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: gpio
     id: blue_led
     name: Blue LED
     pin: GPIO5
     inverted: True
+
+# Using status_led component for red led instead of switch
+#  - platform: gpio
+#    id: red_led
+#    name: Red LED
+#    pin: GPIO4
+#    inverted: True
+
+status_led:
+#  - platform: gpio
+#  id: red_led
+  pin: 
+    number: GPIO4
+    inverted: True
+
 
 # This light is on the ESP12F,
 # not on the Tuya modules. Useful
