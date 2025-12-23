@@ -1,0 +1,42 @@
+# Use this file as the starting point for ESP-C3-12F based devices
+# For example, when replacing the MCU on a Martin Jerry S01 Switch,
+# copy this file to esp-c3-12f_mj-s01.yaml and modify as needed.
+
+substitutions:
+  devicename: esp-c3-12f
+  suffix: "CHANGEME" # DEFINE ON COMMAND LINE PER DEVICE
+  domain: "wildsong.lan"
+  # esphome -s suffix ab12ef run ...
+
+packages:
+  common: !include common.yaml
+
+esphome:
+  name: "$devicename-$suffix"
+  friendly_name: "ESP-C3-12F Prototype"
+  name_add_mac_suffix: false
+
+esp32:
+  variant: esp32c3
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+debug:
+  update_interval: 10s
+
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: "Reset Reason"
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
