@@ -1,9 +1,27 @@
+# Seed Studio Xiao ESP32C6
+# with mmwave 24 GHz presence sensor
+#
+# The Xiao ESP32C6 has a SGM40567 battery charger,
+# I should describe it here. 
+# Should be able to show the battery voltage
+# and whether it's charging or not.
+#
+# I started with Seeed's sample YAML file
+# so I don't even know what is going here yet.  
+#
+
+
 substitutions:
   devicename: "seeed-mmwave"
   friendly_name: "Seeed Studio Xiao with 24GHz mmwave Radar"
 
 packages:
   common: !include common.yaml
+
+# I don't need a captive WiFi hotspot,
+# because it's easy to plug the device into my laptop
+# via USB and set the WiFi credentials that way. 
+# Refer to secrets.yaml
 
 esphome:
   name: "${devicename}"

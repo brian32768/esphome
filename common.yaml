@@ -2,11 +2,11 @@ wifi:
   networks:
   - ssid: !secret wifi_ssid_1
     password: !secret wifi_password_1
-    fast_connect: on
+    priority: 2
   - ssid: !secret wifi_ssid_2
     password: !secret wifi_password_2
-    fast_connect: on
-
+    priority: 1
+    
 # Enable fallback hotspot (captive portal) in case wifi connection fails
 #  ap:
 #    ssid: ${devicename} hotspot
@@ -22,11 +22,11 @@ api:
 # or
 # enable mqtt -- you don't need both
 #mqtt:
-#    broker: 192.168.123.16
+#    broker: 192.168.2.2
 #    discovery: true
 #    discovery_prefix: homeassistant
 # 2021-10-10 not working in mosquitto
-#    username: homeassistant
-#    password: u89adsjr3
+#    username: !secret mqtt_username
+#    password: !secret mqtt_password
 
 logger:
