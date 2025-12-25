@@ -1,54 +1,32 @@
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-  fast_connect: on # doesn't speed us up since we have only 1 net??
-  domain: ".${domain}"
-  use_address: "${devicename}-${suffix}.${domain}"
+  networks:
+  - ssid: !secret wifi_ssid_1
+    password: !secret wifi_password_1
+    fast_connect: on
+  - ssid: !secret wifi_ssid_2
+    password: !secret wifi_password_2
+    fast_connect: on
 
-# Enable fallback hotspot (captive portal) in case wifi connection fails (like, we change the password!!)
-  ap:
-    ssid: ${esphome.name}_hotspot
-    password: !secret wifi_fallback_password
-
-captive_portal:
-  
-# Probably not good on an ESP8266 but handy for debugging
-# https://esphome.io/components/web_server.html
-# You can turn it on as needed for example to confirm
-# all your sensors are there when setting up a new device
-#web_server:
-#  port: 80
-
-# Enable logging
-# for production, set to INFO
-# for development, set to DEBUG
-logger:
-  level: INFO
-
-# If you enable the ESPHome API then you have to turn off
-# discovery in mqtt, they fight each other.
-# With this method you have to click "add" in the ESPHome integration,
-# entities will no longer be added automatically.
-api:
-  # Switch mj-s01-1 was rebooting every 15 minutes, which is the default for
-  # this timer, setting it to 0 will turn off this feature.
-  reboot_timeout: 0s
-
-time:
-  # if you turn off api you have to remove this too
-  - platform: homeassistant
-    id: homeassistant_time
-mqtt:
-  broker: !secret mqtt_broker
-  username: !secret mqtt_username
-  password: !secret mqtt_password
-  discovery: False # "api" does this
-  discover_ip: True # enable device discovery
-  discovery_retain: false
+# Enable fallback hotspot (captive portal) in case wifi connection fails
+#  ap:
+#    ssid: ${devicename} hotspot
+#    password: !secret wifi_password
 
 # Enable over-the-air updates
 ota:
-  - platform: esphome
-    password: !secret ota_password
-    
+  platform: esphome
 
+# Enable Home Assistant API
+# I need this to get the time from Home Assistant
+api:
+# or
+# enable mqtt -- you don't need both
+#mqtt:
+#    broker: 192.168.123.16
+#    discovery: true
+#    discovery_prefix: homeassistant
+# 2021-10-10 not working in mosquitto
+#    username: homeassistant
+#    password: u89adsjr3
+
+logger:
