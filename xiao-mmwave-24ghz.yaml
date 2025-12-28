@@ -37,10 +37,34 @@ esphome:
 # Configuration for ESP32 board
 esp32:
   board: esp32-c6-devkitc-1
+  partitions: partitions_zigbee.csv
   variant: esp32c6
   flash_size: 4MB
   framework:
     type: esp-idf
+    
+external_components:
+  - source: github://luar123/zigbee_esphome
+    components: [zigbee]
+
+zigbee:
+  id: "zb"
+  endpoints:
+    - num: 1
+      device_type: ON_OFF_OUTPUT
+      clusters:
+        - id: OCCUPANCY_SENSING
+          attributes:
+            - attribute_id: 0
+              id: occu_sens
+              type: bool
+              report: true
+              value: false
+
+  on_join:
+    then:
+      - logger.log: "Joined network"
+
 
 # For XIAO ESP32C6 Onboard LED
 light:
@@ -126,6 +150,16 @@ binary_sensor:
       name: Radar Still Target
 
 sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
+
   - platform: ld2410
     moving_distance:
       name: Radar Moving Distance
