@@ -37,7 +37,7 @@ esphome:
 # Configuration for ESP32 board
 esp32:
   board: esp32-c6-devkitc-1
-  partitions: partitions_zigbee.csv
+  partitions: partitions.csv
   variant: esp32c6
   flash_size: 4MB
   framework:
