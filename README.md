@@ -13,16 +13,30 @@ Create a YAML file
 esphome wizard wrover2.yaml
 ```
 
-Process the YAML file, will attempt OTA upgrade on the Docker version, because it can't find the serial port.
+Process the YAML file, will attempt OTA upgrade on the Docker version using a unique name based on the board and a suffix, 
+the suffix is normally the last six of the MAC. The suffix
+is specified on the command line to avoid having to have a 
+unique YAML for each group of devices. The right name then
+ends up in the DHCP server too, so the hostname can be used
+instead of the IP address. Relieving me from having to nail
+down every switch and dimmer in the DHCP server, yay!
 
 ```bash
-esphome run wrover2.yaml
+esphome -s suffix 12AB34 run wrover2.yaml
 ```
 
 Process the YAML and do upgrade over USB port on Linux.
 
 ```bash
 docker run --rm -v "${PWD}":/config --device=/dev/tty.usbserial-1410 -it esphome/esphome wrover2.yaml run
+```
+
+Do the upgrade over the air.
+
+Here's an example of updating a Martin Jerry switch. 
+
+```bash
+esphome run --device 192.168.2.47 --client-id mj-s01-7ac70c mj-s01.yaml
 ```
 
 ## ESP-C3-12F notes

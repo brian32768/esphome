@@ -1,0 +1,221 @@
+# Seed Studio Xiao ESP32C6
+# with mmwave 24 GHz presence sensor
+#
+# The Xiao ESP32C6 has a SGM40567 battery charger,
+# I should describe it here. 
+# Should be able to show the battery voltage
+# and whether it's charging or not.
+#
+# I started with Seeed's sample YAML file
+# so I don't even know what is going here yet.  
+#
+
+
+substitutions:
+  devicename: "seeed-mmwave"
+  friendly_name: "Seeed Studio Xiao with 24GHz mmwave Radar"
+
+packages:
+  common: !include common.yaml
+
+# I don't need a captive WiFi hotspot,
+# because it's easy to plug the device into my laptop
+# via USB and set the WiFi credentials that way. 
+# Refer to secrets.yaml
+
+esphome:
+  name: "${devicename}"
+  friendly_name: "${friendly_name}"
+  name_add_mac_suffix: true
+  project:
+    name: "seeedstudio.mmwave"
+    version: "3.5"
+  platformio_options:
+    board_upload.maximum_size: 4194304
+  min_version: "2024.3.2" # Fix logger compile error on ESP32-C6 esphome#6323
+
+# Configuration for ESP32 board
+esp32:
+  board: esp32-c6-devkitc-1
+  partitions: partitions.csv
+  variant: esp32c6
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+    
+external_components:
+  - source: github://luar123/zigbee_esphome
+    components: [zigbee]
+
+zigbee:
+  id: "zb"
+  endpoints:
+    - num: 1
+      device_type: ON_OFF_OUTPUT
+      clusters:
+        - id: OCCUPANCY_SENSING
+          attributes:
+            - attribute_id: 0
+              id: occu_sens
+              type: bool
+              report: true
+              value: false
+
+  on_join:
+    then:
+      - logger.log: "Joined network"
+
+
+# For XIAO ESP32C6 Onboard LED
+light:
+  - platform: status_led
+    name: "Switch state"
+    pin: GPIO15
+
+uart:
+  id: uart_bus
+  baud_rate: 256000
+  rx_pin: 17
+  tx_pin: 16
+  parity: NONE
+  stop_bits: 1
+
+# Configuration for the 24GHz mmwave XIAO Radar
+
+ld2410:
+  id: ld2410_radar
+  
+number:
+  - platform: ld2410
+    timeout:
+      name: Radar Timeout
+    max_move_distance_gate:
+      name: Radar Max Move Distance
+    max_still_distance_gate:
+      name: Radar Max Still Distance
+    g0:
+      move_threshold:
+        name: g0 move threshold
+      still_threshold:
+        name: g0 still threshold
+    g1:
+      move_threshold:
+        name: g1 move threshold
+      still_threshold:
+        name: g1 still threshold
+    g2:
+      move_threshold:
+        name: g2 move threshold
+      still_threshold:
+        name: g2 still threshold
+    g3:
+      move_threshold:
+        name: g3 move threshold
+      still_threshold:
+        name: g3 still threshold
+    g4:
+      move_threshold:
+        name: g4 move threshold
+      still_threshold:
+        name: g4 still threshold
+    g5:
+      move_threshold:
+        name: g5 move threshold
+      still_threshold:
+        name: g5 still threshold
+    g6:
+      move_threshold:
+        name: g6 move threshold
+      still_threshold:
+        name: g6 still threshold
+    g7:
+      move_threshold:
+        name: g7 move threshold
+      still_threshold:
+        name: g7 still threshold
+    g8:
+      move_threshold:
+        name: g8 move threshold
+      still_threshold:
+        name: g8 still threshold
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: Radar Target
+      id: radar_has_target
+    has_moving_target:
+      name: Radar Moving Target
+    has_still_target:
+      name: Radar Still Target
+
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
+
+  - platform: ld2410
+    moving_distance:
+      name: Radar Moving Distance
+      id: moving_distance
+    still_distance:
+      name: Radar Still Distance
+      id: still_distance
+    moving_energy:
+      name: Radar Move Energy
+    still_energy:
+      name: Radar Still Energy
+    detection_distance:
+      name: Radar Detection Distance
+      id: radar_detection_distance
+    g0:
+      move_energy:
+        name: g0 move energy
+      still_energy:
+        name: g0 still energy
+    g1:
+      move_energy:
+        name: g1 move energy
+      still_energy:
+        name: g1 still energy
+    g2:
+      move_energy:
+        name: g2 move energy
+      still_energy:
+        name: g2 still energy
+    g3:
+      move_energy:
+        name: g3 move energy
+      still_energy:
+        name: g3 still energy
+    g4:
+      move_energy:
+        name: g4 move energy
+      still_energy:
+        name: g4 still energy
+    g5:
+      move_energy:
+        name: g5 move energy
+      still_energy:
+        name: g5 still energy
+    g6:
+      move_energy:
+        name: g6 move energy
+      still_energy:
+        name: g6 still energy
+    g7:
+      move_energy:
+        name: g7 move energy
+      still_energy:
+        name: g7 still energy
+    g8:
+      move_energy:
+        name: g8 move energy
+      still_energy:
+        name: g8 still energy

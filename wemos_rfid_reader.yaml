@@ -1,0 +1,53 @@
+##
+##  There is no binary_sensor here, so this image should allow watching for tags on the console.
+##
+
+# These are the only two that work for the reader, huh?
+## White Card 43-FB-31-13
+## Blue key fob 23-8C-D5-E5
+
+substitutions:
+  devicename: wemos-rfid
+  upper_devicename: WEMOS-RFID
+  static_ip: 192.168.123.240
+<<: !include common.yaml
+
+esphome:
+  name: ${devicename}
+  platform: ESP8266
+  board: d1_mini
+
+logger:
+
+spi:
+  clk_pin: D5
+  miso_pin: D6
+  mosi_pin: D7
+
+rc522_spi:
+  cs_pin: GPIO15
+  on_tag:
+    then:
+      - light.turn_on: light_1
+      - delay: 1s
+      - light.turn_off: light_1
+  reset_pin: D3
+
+
+# SDA   D8
+# IRQ   NC
+    
+light:
+  - platform: monochromatic
+    id: light_1
+    name: Builtin LED
+    output: output_bltinled
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 10ms
+
+output:
+  - platform: esp8266_pwm
+    id: output_bltinled
+    pin: D4
+    inverted: True
+
