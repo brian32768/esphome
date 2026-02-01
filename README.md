@@ -93,3 +93,22 @@ https://esphome.io/cookbook/leak-detector-m5stickc
 Code: https://github.com/airy10/esphome-m5stickC
 Better AXP192 code: https://gitlab.com/geiseri/esphome_extras
 
+## Seeed Studio Sensecap Indicator D1
+
+d1-esp32.yaml is a set up for the ESP32-S3 processor.
+
+To get it to compile I had to uninstall esphome (2025.12.2) and reinstall to get the latest version (2026.1.3). (Update did not work.) It kept telling me it could not find the hello_world.yaml file, which was left out of the earlier build.
+
+N.B. Windows is not supported. If running on Pearl, use a Debian Bash shell.
+
+```bash
+conda activate esphome
+pip3 uninstall esphome
+pip3 install esphome
+esphome compile d1-esp32.yaml
+```
+
+Now use Windows to upload.
+
+```bash
+esphome upload d1-esp32.yaml
