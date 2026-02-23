@@ -10,7 +10,7 @@
 #   * Infrared transmit on GPIO12
 #
 substitutions:
-  devicename: m5atom_matrix
+  devicename: m5atom-matrix
   friendly_name: "M5Stack Atom Matrix"
 
 packages:
@@ -19,7 +19,7 @@ packages:
 
 esphome:
   # name the esphome build will use
-  name: m5atom_matrix
+  name: m5atom-matrix
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
   name_add_mac_suffix: true
@@ -30,14 +30,13 @@ esphome:
 #  flash_write_interval: 5min
 
 light:
-  # https://esphome.io/components/light/fastled/
-  - platform: fastled_clockless
-    id: matrix_light
-    name: "FastLED WS2812 Lights"
-    chipset: WS2812
+  # https://esphome.io/components/light/esp32_rmt_led_strip/
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
     pin: GPIO27
     num_leds: 25
-    rgb_order: GRB
+    chipset: ws2812
+    name: "Matrix Light"
     restore_mode: RESTORE_DEFAULT_OFF
 
 # That's all!

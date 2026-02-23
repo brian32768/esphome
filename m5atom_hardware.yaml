@@ -33,19 +33,14 @@ binary_sensor:
 
     # Button configuration
     pin:
-      # The button is connected to GPIO41
-      number: GPIO41
+      number: GPIO39
 
       # Inverted means pressed=LOW, released=HIGH (common for buttons with pullup)
       inverted: true
 
-      # Pin mode configuration
       mode:
-        # Configure as input (reads signal)
         input: true
-
-        # Enable internal pullup resistor (keeps pin HIGH when button not pressed)
-        pullup: true
+        #pullup: true # not needed here
 
     # Filters clean up the button signal
     filters:
@@ -56,7 +51,6 @@ remote_transmitter:
   - id: ir_transmitter
     pin: GPIO12
     carrier_duty_percent: 50%
-    carrier_frequency: 38000Hz
     non_blocking: true
 
 sensor:
