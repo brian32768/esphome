@@ -1,0 +1,43 @@
+# The M5 Atom Matrix (https://docs.m5stack.com/en/core/ATOM%20Matrix has
+#
+#   * USB-C UART port at GPIO1, GPIO3, and also GPIO0, EN
+#   * Button GPIO39
+#   * 5x5 WS2812c matrix GPIO27
+#   * Grove GPIO32(white), GPIO26(yellow), 5V out(red), GND(black
+#   * Pins: GPIO21(SCL), GPIO25(SDA), GPIO22, GPIO19, GPIO23, GPIO33,
+#             5V out, GND, 3V3 out
+#   * MPU6886 Temperature, 6-axis IMU IC on I2C addr 0x68 GPIO21, GPIO25
+#   * Infrared transmit on GPIO12
+#
+substitutions:
+  devicename: m5atom_matrix
+  friendly_name: "M5Stack Atom Matrix"
+
+packages:
+  common: !include common.yaml
+  m5atom: !include m5atom_hardware.yaml
+
+esphome:
+  # name the esphome build will use
+  name: m5atom_matrix
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  # I could add boot stuff here
+
+# Perhaps cache state
+#preferences:
+#  flash_write_interval: 5min
+
+light:
+  # https://esphome.io/components/light/fastled/
+  - platform: fastled_clockless
+    id: matrix_light
+    name: "FastLED WS2812 Lights"
+    chipset: WS2812
+    pin: GPIO27
+    num_leds: 25
+    rgb_order: GRB
+    restore_mode: RESTORE_DEFAULT_OFF
+
+# That's all!

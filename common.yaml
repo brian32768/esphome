@@ -22,10 +22,10 @@ ota:
 # Enable Home Assistant API
 # I need this to get the time from Home Assistant
 api:
-# or
+# ~ or ~
 # enable mqtt -- you don't need both
 #mqtt:
-#    broker: 192.168.2.2
+#    broker: mqtt.wildsong.lan
 #    discovery: true
 #    discovery_prefix: homeassistant
 # 2021-10-10 not working in mosquitto

@@ -1,6 +1,6 @@
 substitutions:
-  devicename: m5stick01
-  static_ip: 192.168.123.209
+  devicename: m5stickc
+  friendly_name: "M5StickC"
 
 packages:
   common: !include common.yaml

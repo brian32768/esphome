@@ -6,8 +6,17 @@ page](https://esphome.io/guides/getting_started_command_line.html)
  conda activate esphome
  pip install esphome
 ``` 
+Some of the projects here require a recent version of esphome.
+Currently I am using 2026.1.4. The easiest way to update is
+to uninstall the old one, for example, 
 
-Create a YAML file
+```bash
+conda activate esphome
+pip uninstall esphome
+pip install esphome
+```
+
+Create a YAML file from a template.
 
 ```bash
 esphome wizard wrover2.yaml
